@@ -1,12 +1,12 @@
 import random
 
 from src.settings import *
+from src.snake import Snake
 
 module_charge = pygame.init()
 print(module_charge)
 msg_font = pygame.font.SysFont('ubuntu', 20)
 scr_font = pygame.font.SysFont('ubuntu', 25)
-
 
 def game_start():
     game_over = False
@@ -54,6 +54,7 @@ def game_start():
         for pixel in snake_pixels[:-1]:
             if pixel == [x, y]:
                 game_close = True
+        Snake.draw_snake(snake_size, snake_pixels)
         pygame.display.update()
         if x == target_x and y == target_y:
             target_x = round(random.randrange(0, width - snake_size) / 10.0) * 10.0
