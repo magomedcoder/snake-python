@@ -1,5 +1,6 @@
 import random
 
+from src.score import Score
 from src.settings import *
 from src.snake import Snake
 
@@ -7,6 +8,12 @@ module_charge = pygame.init()
 print(module_charge)
 msg_font = pygame.font.SysFont('ubuntu', 20)
 scr_font = pygame.font.SysFont('ubuntu', 25)
+
+
+def print_score(score):
+    text = scr_font.render("Счет: " + str(score), True, white)
+    game_display.blit(text, [0, 0])
+
 
 def game_start():
     game_over = False
@@ -19,6 +26,15 @@ def game_start():
         random.randrange(0, height - snake_size) / 10.0) * 10.0
     while not game_over:
         while game_close:
+            game_over_message = msg_font.render("Игра закончена!", True, red)
+            high_score = Score.get(game_over_message)
+            if snake_length - 1 > high_score:
+                high_score = snake_length - 1
+                Score.save(high_score)
+            high_score_message = msg_font.render("Рекорд: " + str(high_score), True, white)
+            game_display.blit(high_score_message, [width / 3 + 30, height / 3 + 60])
+            game_display.blit(game_over_message, [width / 4, height / 3])
+            print_score(snake_length - 1)
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
@@ -55,6 +71,7 @@ def game_start():
             if pixel == [x, y]:
                 game_close = True
         Snake.draw_snake(snake_size, snake_pixels)
+        print_score(snake_length - 1)
         pygame.display.update()
         if x == target_x and y == target_y:
             target_x = round(random.randrange(0, width - snake_size) / 10.0) * 10.0
